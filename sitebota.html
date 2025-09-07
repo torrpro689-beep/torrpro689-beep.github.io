@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG MassSender - Бот для рассылки в Telegram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: #764ba2;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #8a63d2;
+        }
+        
+        .hero {
+            padding: 160px 0 100px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero p {
+            font-size: 22px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #8a63d2;
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(138, 99, 210, 0.4);
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(138, 99, 210, 0.6);
+        }
+        
+        .btn-telegram {
+            background: #0088cc;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-telegram:hover {
+            background: #006da3;
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.6);
+        }
+        
+        .btn-telegram::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+        
+        .btn-telegram:hover::after {
+            opacity: 1;
+            transform: rotate(30deg) translate(10%, 10%);
+        }
+        
+        .features {
+            padding: 100px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-card i {
+            font-size: 50px;
+            color: #8a63d2;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .pricing {
+            padding: 100px 0;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .pricing-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .pricing-card h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .price {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #8a63d2;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-features li {
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .trial-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .how-it-works {
+            padding: 100px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+        
+        .step {
+            text-align: center;
+            max-width: 250px;
+            margin: 20px;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #8a63d2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 20px;
+        }
+        
+        .faq {
+            padding: 100px 0;
+        }
+        
+        .faq-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding: 0 20px 20px;
+        }
+        
+        .cta {
+            padding: 100px 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .footer-links li {
+            margin: 0 15px;
+        }
+        
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fab fa-telegram"></i>
+                <span>TG MassSender</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">Возможности</a></li>
+                    <li><a href="#pricing">Цены</a></li>
+                    <li><a href="#how-it-works">Как работает</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Мощный бот для рассылки в Telegram</h1>
+            <p>Автоматизируйте ваши рекламные кампании и увеличивайте охват аудитории с помощью нашего продвинутого бота для рассылки</p>
+            <a href="#" class="btn btn-telegram" id="main-cta">Начать использовать</a>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Наши возможности</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-paper-plane"></i>
+                    <h3>Массовая рассылка</h3>
+                    <p>Отправляйте сообщения тысячам пользователей одновременно с минимальными усилиями</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Таргетирование</h3>
+                    <p>Выбирайте конкретные группы и каналы для максимально эффективного охвата</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Аналитика</h3>
+                    <p>Получайте детальную статистику по доставленным сообщениям и реакции аудитории</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Отложенная отправка</h3>
+                    <p>Планируйте рассылки на удобное время для максимальной эффективности</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Безопасность</h3>
+                    <p>Ваши данные и аккаунт защищены с помощью современных методов шифрования</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-headset"></i>
+                    <h3>Поддержка 24/7</h3>
+                    <p>Наша команда всегда готова помочь вам с любыми вопросами и проблемами</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Наши тарифы <span class="trial-badge">30 минут бесплатно!</span></h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Стартовый</h3>
+                    <div class="price">990₽/мес</div>
+                    <ul class="pricing-features">
+                        <li><strong>30 минут бесплатного тестирования</strong></li>
+                        <li>До 1000 сообщений в день</li>
+                        <li>5 целевых групп</li>
+                        <li>Базовая аналитика</li>
+                        <li>Поддержка по email</li>
+                    </ul>
+                    <a href="#" class="btn btn-telegram pricing-btn">Выбрать</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Профессиональный</h3>
+                    <div class="price">2990₽/мес</div>
+                    <ul class="pricing-features">
+                        <li><strong>30 минут бесплатного тестирования</strong></li>
+                        <li>До 5000 сообщений в день</li>
+                        <li>20 целевых групп</li>
+                        <li>Расширенная аналитика</li>
+                        <li>Приоритетная поддержка</li>
+                    </ul>
+                    <a href="#" class="btn btn-telegram pricing-btn">Выбрать</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Корпоративный</h3>
+                    <div class="price">6990₽/мес</div>
+                    <ul class="pricing-features">
+                        <li><strong>30 минут бесплатного тестирования</strong></li>
+                        <li>Неограниченные сообщения</li>
+                        <li>Неограниченное количество групп</li>
+                        <li>Полная аналитика и отчеты</li>
+                        <li>Персональный менеджер</li>
+                    </ul>
+                    <a href="#" class="btn btn-telegram pricing-btn">Выбрать</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Как это работает</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Регистрация</h3>
+                    <p>Зарегистрируйтесь и получите 30 минут бесплатного тестирования</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Настройка</h3>
+                    <p>Добавьте ваши группы и настройте параметры рассылки</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Создание</h3>
+                    <p>Подготовьте контент для рассылки</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Запуск</h3>
+                    <p>Запустите рассылку и отслеживайте результаты</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title">Часто задаваемые вопросы</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Безопасно ли использовать бота для рассылки?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Да, наш бот использует официальное API Telegram и работает в рамках правил платформы. Мы применяем современные методы шифрования для защиты ваших данных.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Можно ли использовать бота для личных сообщений?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Наш бот предназначен только для рассылки в группы и каналы. Рассылка личных сообщений без согласия пользователей запрещена правилами Telegram.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Как быстро можно начать после оплаты?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Доступ к боту предоставляется мгновенно после подтверждения оплаты. Вы сможете начать работу в течение 5-10 минут.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Есть ли бесплатный пробный период?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Да, мы предоставляем <strong>30 минут бесплатного тестирования</strong> для ознакомления с возможностями бота. Этого времени достаточно, чтобы оценить основные функции и принять решение о покупке.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2 class="section-title">Готовы увеличить охват аудитории?</h2>
+            <p>Присоединяйтесь к тысячам довольных пользователей уже сегодня</p>
+            <a href="#" class="btn btn-telegram" id="bottom-cta">Начать использовать</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="logo">
+                <i class="fab fa-telegram"></i>
+                <span>TG MassSender</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">Политика конфиденциальности</a></li>
+                <li><a href="#">Условия использования</a></li>
+                <li><a href="#">Контакты</a></li>
+            </ul>
+            <p>© 2023 TG MassSender. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <div class="modal" id="telegram-modal">
+        <div class="modal-content">
+            <h3>Переход в Telegram</h3>
+            <p>Вы будете перенаправлены в Telegram для начала работы с ботом. Нажмите "Перейти", чтобы продолжить.</p>
+            <div class="modal-buttons">
+                <button class="btn" onclick="closeModal()">Отмена</button>
+                <button class="btn btn-telegram" onclick="goToTelegram()">Перейти</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Работа с FAQ аккордеоном
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                item.classList.toggle('active');
+            });
+        });
+
+        // Плавная прокрутка для навигации
+        document.querySelectorAll('nav a, .btn[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Открытие модального окна при клике на кнопки
+        document.querySelectorAll('#main-cta, #bottom-cta, .pricing-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('telegram-modal').style.display = 'flex';
+            });
+        });
+
+        // Закрытие модального окна
+        function closeModal() {
+            document.getElementById('telegram-modal').style.display = 'none';
+        }
+
+        // Переход в Telegram
+        function goToTelegram() {
+            window.location.href = 'https://t.me/rassilshik123123_bot';
+        }
+
+        // Закрытие модального окна при клике вне его
+        window.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('telegram-modal')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
